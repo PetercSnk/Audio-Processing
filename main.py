@@ -42,8 +42,8 @@ def load_audio():
 
 #plt.plot(x1, s4)
 #plt.show()
-
-
+def add(y1, y2):
+    return y1+y2
 
 class Wave:
     def __init__(self, waveform, freq, duration, amp = 1, phase = 0, sampleRate = 44100):
@@ -85,11 +85,6 @@ class Wave:
         else:
             raise TypeError("invalid waveform")
 
-    def add(self):
-
-
-        return 0
-    
     def plot(self):
         plt.plot(self.x, self.y)
         plt.show()
@@ -100,8 +95,15 @@ class Wave:
         wavfile.write(f"{fileName}.wav", self.sampleRate, self.y)
 
 
+#remove class? waveCreation which only returns y val
 
 if __name__ == "__main__":
-    wave = Wave("sawtooth", 1, 5)
+    wave = Wave("sine", 1, 5)
+    wave2 = Wave("sine", 2, 5, phase=np.pi)
     wave.plot()
+    wave2.plot()
+    a = add(wave.y, wave2.y)
+
+
+
     #wave.save("square")
