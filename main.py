@@ -45,18 +45,24 @@ def createY(waveform, freq, duration, amp = 1, phase = 0, sampleRate = 44100, ha
     return wave
 
 # add short wave to long wave with splicing [::] select start 
-def add(y1, y2, start = 0):
-    if y1.sampleRate == y2.sampleRate:
-        
-
-
-        pass
+def add(staticWave, variableWave, startSample = 1):
+    if staticWave.sampleRate != variableWave.sampleRate:
+        raise TypeError("sample rates must be equal")
+    elif variableWave.duration > staticWave.duration:
+        raise TypeError("variableWave must be smaller or equal to staticWave")
+    elif startSample+variableWave.duration*variableWave.sampleRate >= staticWave.duration*staticWave.sampleRate:
+        startMax = staticWave.duration*staticWave.sampleRate-variableWave.duration*variableWave.sampleRate
+        raise TypeError(f"startSample to large, max value is {startMax}")
     else:
-        raise TypeError("sample rates differ")
-
-
-    #wave = Wave() 
-    return y1+y2
+        returnWave = np.zeros(staticWave.duration*staticWave.sampleRate)
+        firstSection = staticWave.y[:startSample:]
+        lastSection = staticWave.y[startSample+variableWave.duration*variableWave.sampleRate::]
+        middleSection = staticWave.y[startSample:startSample+variableWave.duration*variableWave.sampleRate:]+variableWave.y
+        returnWave[:firstSection.size:] = firstSection
+        returnWave[firstSection.size:middleSection.size+1:] = middleSection
+        returnWave[middleSection.size:lastSection.size+1:] = lastSection
+        wave = Wave(staticWave.x, returnWave, 0, staticWave.duration, 0, 0, staticWave.sampleRate, 0) 
+        return wave
 
 class Wave():
     def __init__(self, x, y, freq, duration, amp, phase, sampleRate, harmonies):
@@ -83,9 +89,9 @@ class Wave():
 
 if __name__ == "__main__":
     
-    y = createY("sine", 10, 1)
-    y.values()  
-    y.plot() 
+    y1 = createY("sine", 1, 2)
+    y2 = createY("sine", 1, 4)
+    y3 = add(y2, y1)
 
 
 
