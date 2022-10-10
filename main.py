@@ -45,12 +45,10 @@ def createY(waveform, freq, duration, amp = 1, phase = 0, sampleRate = 44100, ha
     return wave
 
 # add short wave to long wave with splicing [::] select start 
-def add(staticWave, variableWave, startSample = 1):
+def add(staticWave, variableWave, startSample = 0):
     if staticWave.sampleRate != variableWave.sampleRate:
         raise TypeError("sample rates must be equal")
-    elif variableWave.duration > staticWave.duration:
-        raise TypeError("variableWave must be smaller or equal to staticWave")
-    elif startSample+variableWave.duration*variableWave.sampleRate >= staticWave.duration*staticWave.sampleRate:
+    elif startSample >= -variableWave.duration*variableWave.sampleRate and startSample <= staticWave.duration*staticWave*sampleRate:
         startMax = staticWave.duration*staticWave.sampleRate-variableWave.duration*variableWave.sampleRate
         raise TypeError(f"startSample to large, max value is {startMax}")
     else:
