@@ -4,14 +4,14 @@ import numpy as np
 import matplotlib.pyplot as plt
 from glob import glob
 from scipy.io import wavfile
-import librosa
+#import librosa
 
-def load_audio():
+"""def load_audio():
     audio_files = glob('/Repository/Audio Processing/*.wav')
     y, sr = librosa.load(audio_files[0])
     print(y, sr)
     pd.Series(y).plot(figsize = (10, 5), lw = 1)
-    plt.show()
+    plt.show()"""
 
 # add attack and delay
 def createY(waveform, freq, duration, amp = 1, phase = 0, sampleRate = 44100, harmonies = 32):
@@ -45,12 +45,14 @@ def createY(waveform, freq, duration, amp = 1, phase = 0, sampleRate = 44100, ha
     return wave
 
 # add short wave to long wave with splicing [::] select start 
-def add(staticWave, variableWave, startSample = 0):
-
-    print(variableWave.duration*variableWave.sampleRate+staticWave.duration*staticWave.sampleRate)
+def add(staticWave, variableWave, startSample = -21000):
+    newLength = variableWave.duration*variableWave.sampleRate+staticWave.duration*staticWave.sampleRate
+    print(newLength)
+    y = np.ones(newLength)
+    startSample =
     if staticWave.sampleRate != variableWave.sampleRate:
         raise TypeError("sample rates must be equal")
-    #elif startSample >= -variableWave.duration*variableWave.sampleRate and startSample <= staticWave.duration*staticWave.sampleRate:
+    elif startSample < -variableWave.duration*variableWave.sampleRate and startSample <= staticWave.duration*staticWave.sampleRate:
 
 
         #startMax = staticWave.duration*staticWave.sampleRate-variableWave.duration*variableWave.sampleRate
