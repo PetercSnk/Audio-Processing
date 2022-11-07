@@ -45,28 +45,38 @@ def createY(waveform, freq, duration, amp = 1, phase = 0, sampleRate = 44100, ha
     return wave
 
 # add short wave to long wave with splicing [::] select start 
-def add(staticWave, variableWave, startSample = -21000):
-    newLength = variableWave.duration*variableWave.sampleRate+staticWave.duration*staticWave.sampleRate
-    print(newLength)
-    y = np.ones(newLength)
-    startSample =
-    if staticWave.sampleRate != variableWave.sampleRate:
-        raise TypeError("sample rates must be equal")
-    elif startSample < -variableWave.duration*variableWave.sampleRate and startSample <= staticWave.duration*staticWave.sampleRate:
+def padding(staticWave, variableWave, offset):
+    variableLen = variableWave.duration*variableWave.sampleRate
+    staticLen = staticWave.duration*staticWave.sampleRate
+    # check if the offset is negative or positive
+    if np.abs(offset)/(offset*-1)==1:
+        print("negative")
+        staticPadding = np.abs(offset)
+        variablePadding = variableLen-np.abs(offset)                      
+    elif np.abs(offset)/(offset*-1)==-1:
+        print("positive")
+        staticPadding = variableLen-np.abs(offset)
+        variablePadding = np.abs(offset)
+    elif offset==0:
+        if staticLen>variableLen:
+            difference = np.abs(staticLen-variableLen)
+            variablePadding = variableLen+difference
+        if staticLen<variableLen:
+            difference = np.abs(staticLen-variableLen)
+            staticPadding = staticLen+difference
+        else:
+            # same len and offset no padding needed
+            return
+    
 
 
-        #startMax = staticWave.duration*staticWave.sampleRate-variableWave.duration*variableWave.sampleRate
-        #raise TypeError(f"startSample to large, max value is {startMax}")
-    else:
-        #returnWave = np.zeros(staticWave.duration*staticWave.sampleRate)
-        #firstSection = staticWave.y[:startSample:]
-        #lastSection = staticWave.y[startSample+variableWave.duration*variableWave.sampleRate::]
-        #middleSection = staticWave.y[startSample:startSample+variableWave.duration*variableWave.sampleRate:]+variableWave.y
-        #returnWave[:firstSection.size:] = firstSection
-        #returnWave[firstSection.size:middleSection.size+1:] = middleSection
-        #returnWave[middleSection.size:lastSection.size+1:] = lastSection
-        #wave = Wave(staticWave.x, returnWave, 0, staticWave.duration, 0, 0, staticWave.sampleRate, 0)
-        return 0
+
+
+
+    print(staticPadding, variablePadding)
+    return 
+
+    
 
 class Wave():
     def __init__(self, x, y, freq, duration, amp, phase, sampleRate, harmonies):
@@ -94,8 +104,8 @@ class Wave():
 if __name__ == "__main__":
     
     y1 = createY("sine", 1, 2)
-    y2 = createY("sine", 1, 4)
-    y3 = add(y1, y2)
+    y2 = createY("sine", 1, 2)
+    y3 = padding(y1, y2, -44100)
 
 
 
