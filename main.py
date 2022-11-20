@@ -45,35 +45,24 @@ def createY(waveform, freq, duration, amp = 1, phase = 0, sampleRate = 44100, ha
     return wave
 
 # add short wave to long wave with splicing [::] select start 
-def padding(staticWave, variableWave, offset):
-    variableLen = variableWave.duration*variableWave.sampleRate
-    staticLen = staticWave.duration*staticWave.sampleRate
-    # check if the offset is negative or positive
-    if np.abs(offset)/(offset*-1)==1:
-        print("negative")
-        staticPadding = np.abs(offset)
-        variablePadding = variableLen-np.abs(offset)                      
-    elif np.abs(offset)/(offset*-1)==-1:
-        print("positive")
-        staticPadding = variableLen-np.abs(offset)
-        variablePadding = np.abs(offset)
-    elif offset==0:
-        if staticLen>variableLen:
-            difference = np.abs(staticLen-variableLen)
-            variablePadding = variableLen+difference
-        if staticLen<variableLen:
-            difference = np.abs(staticLen-variableLen)
-            staticPadding = staticLen+difference
-        else:
-            # same len and offset no padding needed
-            return
+def add(wave1, wave2, offsetFreq1 = 0, offsetFreq2 = 0):
+    wave1len = wave1.duration*wave1.sampleRate
+    wave2len = wave2.duration*wave2.sampleRate
+    wave3len = max([wave1len+offsetFreq1, wave2len+offsetFreq2])
+    np.zeros(wave3len)
+    if offsetFreq1 < offsetFreq2:
+        left = wave1[0:offsetFreq2-offsetFreq1]
+    elif offsetFreq1 > offsetFreq2:
+        left = wave2[0:offsetFreq1-offsetFreq2]
+    else:
+        left = None
     
 
 
 
 
 
-    print(staticPadding, variablePadding)
+    
     return 
 
     
@@ -105,7 +94,7 @@ if __name__ == "__main__":
     
     y1 = createY("sine", 1, 2)
     y2 = createY("sine", 1, 2)
-    y3 = padding(y1, y2, -44100)
+    y3 = add(y1, y2, 0, 10000)
 
 
 
