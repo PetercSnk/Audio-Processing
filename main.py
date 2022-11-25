@@ -48,12 +48,19 @@ def createY(waveform, freq, duration, amp = 1, phase = 0, sampleRate = 44100, ha
 def add(wave1, wave2, offsetFreq1 = 0, offsetFreq2 = 0):
     wave1len = wave1.duration*wave1.sampleRate
     wave2len = wave2.duration*wave2.sampleRate
-    wave3len = max([wave1len+offsetFreq1, wave2len+offsetFreq2])
+    wave3len = max([wave1len+offsetFreq1-offsetFreq2, wave2len+offsetFreq2-offsetFreq1])
+    #print(wave1len+offsetFreq1-offsetFreq2, wave2len+offsetFreq2-offsetFreq1)
     np.zeros(wave3len)
+    midStop = min([wave1len+offsetFreq1, wave2len+offsetFreq2])
     if offsetFreq1 < offsetFreq2:
-        left = wave1[0:offsetFreq2-offsetFreq1]
+        left = wave1.y[0:offsetFreq2-offsetFreq1]
+        middle1 = wave1.y[offsetFreq2:midStop-offsetFreq1]
+        middle2 = wave2.y[0:midStop-offsetFreq2]
+
     elif offsetFreq1 > offsetFreq2:
-        left = wave2[0:offsetFreq1-offsetFreq2]
+        left = wave2.y[0:offsetFreq1-offsetFreq2]
+        middle1 = wave1.y[0:midStop-offsetFreq1]
+        middle2 = wave2.y[offsetFreq1:midStop-offsetFreq2]
     else:
         left = None
     
@@ -92,9 +99,9 @@ class Wave():
 
 if __name__ == "__main__":
     
-    y1 = createY("sine", 1, 2)
+    y1 = createY("sine", 1, 4)
     y2 = createY("sine", 1, 2)
-    y3 = add(y1, y2, 0, 10000)
+    y3 = add(y1, y2, 0, 0)
 
 
 
