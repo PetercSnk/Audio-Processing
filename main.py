@@ -1,17 +1,6 @@
-from random import sample
-import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-from glob import glob
 from scipy.io import wavfile
-#import librosa
-
-"""def load_audio():
-    audio_files = glob('/Repository/Audio Processing/*.wav')
-    y, sr = librosa.load(audio_files[0])
-    print(y, sr)
-    pd.Series(y).plot(figsize = (10, 5), lw = 1)
-    plt.show()"""
 
 # add attack and delay
 def createY(waveform, freq, duration, amp = 1, phase = 0, sampleRate = 44100, harmonies = 32):
@@ -46,12 +35,18 @@ def createY(waveform, freq, duration, amp = 1, phase = 0, sampleRate = 44100, ha
 
 # add short wave to long wave with splicing [::] select start 
 def add(wave1, wave2, offsetFreq1 = 0, offsetFreq2 = 0):
+    # lenghts of waves are total number of samples
     wave1len = wave1.duration*wave1.sampleRate
     wave2len = wave2.duration*wave2.sampleRate
+    # generated wave will be the length of the largest wave + its offset - other waves offset
     wave3len = max([wave1len+offsetFreq1-offsetFreq2, wave2len+offsetFreq2-offsetFreq1])
     #print(wave1len+offsetFreq1-offsetFreq2, wave2len+offsetFreq2-offsetFreq1)
+    # create array of zeros of wave3len
     np.zeros(wave3len)
     midStop = min([wave1len+offsetFreq1, wave2len+offsetFreq2])
+    if  offsetFreq1 > wave2len+offsetFreq2 or offsetFreq2 > wave1len+offsetFreq1:
+        # ?? 
+
     if offsetFreq1 < offsetFreq2:
         left = wave1.y[0:offsetFreq2-offsetFreq1]
         middle1 = wave1.y[offsetFreq2:midStop-offsetFreq1]
